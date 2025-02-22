@@ -11,7 +11,7 @@ AlignEscapedNewlines:                 true
 AlignTrailingComments:                true
 AllowShortBlocksOnASingleLine:        Empty
 AllowShortFunctionsOnASingleLine:     None
-AllowShortIfStatementsOnASingleLine:  Never
+AllowShortIfStatementsOnASingleLine:  true
 AllowShortLoopsOnASingleLine:         false
 BreakBeforeBraces: Custom
 BraceWrapping:
