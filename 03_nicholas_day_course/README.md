@@ -28,3 +28,19 @@ int main() {
 }
 ```
 
+## Insertion and extraction operator
+- Data is output using the **insertion operator `<<`**.
+- Data is retrieved using the **extraction operator `>>`**
+- **cout** is an object of the **ostream** class
+
+```cpp
+#include <iostream>
+
+int main() {
+    int c;
+    std::cin >> c;
+    std::cout << c << std::endl;
+    return 0;
+}
+```
+
