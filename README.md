@@ -232,7 +232,7 @@ int main() {
 }
 ```
 
-## Access Modifiers or Access Specifier (Encapsulation)
+## Access Modifiers or Access Specifier
 
 - Constructors should have `public` access.
 
@@ -276,4 +276,41 @@ int main() {
     // cout << obj.protectedVar << endl; // ❌ Error
     // cout << obj.privateVar << endl; // ❌ Error
 }
+```
+
+## Structures (and Function Pointers in C)
+
+- Included in C++ to provide compatibility with C.
+- Similar to C++ classes, but inheritance is `public` by default (whereas for classes it's `private` by default).
+- Structures in C++ can have member functions (methods), while C structures can't.
+    - However, a workaround in C is possible withh **function pointers**.
+
+```c
+#include <stdio.h>
+
+typedef struct {
+    int x, y;
+    void (*print)(struct Point *); // Function pointer inside the struct
+} Point;
+
+void printPoint(Point *p) {
+    printf("Point(%d, %d)\n", p->x, p->y);
+}
+
+int main() {
+    Point p = {10, 20, printPoint}; // Assign function pointer
+    p.print(&p); // Call the function like a method
+    return 0;
+}
+```
+
+- In C++, with methods, the syntax is simplified to the following.
+
+```cpp
+struct Point {
+    int x, y;
+    void print() { 
+        cout << "Point(" << x << ", " << y << ")\n"; 
+    }
+};
 ```
