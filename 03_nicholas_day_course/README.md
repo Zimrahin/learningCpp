@@ -44,3 +44,94 @@ int main() {
 }
 ```
 
+
+## Passing by Value
+- A copy of the argument is passed to the function.
+- Modifications inside the function do not affect the original variable.
+- Suitable for small or simple data types where copying is inexpensive.
+
+```cpp
+#include <iostream>
+
+void modifyValue(int value) {
+    value = 100;  // Only the local copy is modified.
+}
+
+int main() {
+    int a = 10;
+    modifyValue(a);
+    std::cout << "After modifyValue: " << a << std::endl;  // a remains 10.
+    return 0;
+}
+```
+
+## Passing by Reference
+- An alias for the original variable is passed; no copy is made.
+- Changes made within the function affect the original variable.
+- Efficient for large objects and when modification of the original variable is intended.
+
+```cpp
+#include <iostream>
+
+void modifyReference(int &value) {
+    value = 100;  // Directly modifies the original variable.
+}
+
+int main() {
+    int a = 10;
+    modifyReference(a);
+    std::cout << "After modifyReference: " << a << std::endl;  // a becomes 100.
+    return 0;
+}
+```
+
+---
+
+## Passing by Constant Reference
+- A reference to the original variable is passed, but it is read-only.
+- The function can access the variable without copying it but cannot modify it.
+- Ideal for large objects when you want to avoid copying and protect against modification.
+
+```cpp
+#include <iostream>
+
+void printValue(const int &value) {
+    value = 100;  // Error: Cannot modify a constant reference.
+    std::cout << "Value: " << value << std::endl;
+}
+
+int main() {
+    int a = 10;
+    printValue(a);
+    std::cout << "After printValue: " << a << std::endl;
+    return 0;
+}
+```
+<div style="border: 1px solidrgb(243, 127, 18); background-color:rgba(165, 91, 0, 0.77); padding: 10px;">
+  The example will <strong>NOT compile</strong> as it attempts to change the value of a constant.
+</div>
+
+---
+
+## Passing by Pointer
+- Reference mechanism used within C code and inherited by C++
+- Allows modification of the original variable by dereferencing the pointer.
+- The pointer can be `nullptr`, so null checks are often necessary.
+- Useful passing arrays as arguments.
+
+```cpp
+#include <iostream>
+
+void modifyPointer(int *value) {
+    if (value != nullptr) {  // Always check for nullptr.
+        *value = 100;  // Dereference to modify the original variable.
+    }
+}
+
+int main() {
+    int a = 10;
+    modifyPointer(&a);
+    std::cout << "After modifyPointer: " << a << std::endl;  // a becomes 100.
+    return 0;
+}
+```
