@@ -203,3 +203,32 @@ public:
     Player(int pNumber, string pName) : number(pNumber), name(pName) {}
 };
 ```
+
+## Overloading
+
+- **Function overloading** allows multiple functions with the same name but different parameters.
+- The compiler differentiates them based on the **number** or **type** of parameters.
+
+```cpp
+#include <iostream>
+
+void print(int x) {
+    std::cout << "Integer: " << x << std::endl;
+}
+
+void print(double x) {
+    std::cout << "Double: " << x << std::endl;
+}
+
+void print(std::string x) {
+    std::cout << "String: " << x << std::endl;
+}
+
+int main() {
+    print(10);        // Calls print(int)
+    print(3.14);      // Calls print(double)
+    print("Hello");   // Calls print(std::string)
+    return 0;
+}
+```
+
