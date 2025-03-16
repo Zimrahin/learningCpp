@@ -232,3 +232,48 @@ int main() {
 }
 ```
 
+## Access Modifiers or Access Specifier (Encapsulation)
+
+- Constructors should have `public` access.
+
+
+| Specifier  | Accessible From Same Class | Accessible From Derived Class | Accessible From Outside Class |
+|------------|---------------------------|------------------------------|------------------------------|
+| **public**    | ✅ Yes  | ✅ Yes  | ✅ Yes  |
+| **protected** | ✅ Yes  | ✅ Yes  | ❌ No  |
+| **private**   | ✅ Yes  | ❌ No  | ❌ No  |
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Example {
+public:
+    // Python equivalent: self.public_var
+    int publicVar = 1;  // Accessible from anywhere
+
+protected:
+    // Python equivalent: self._protected_var
+    int protectedVar = 2; // Accessible in derived classes
+
+private:
+    // Python equivalent: self.__private_var
+    int privateVar = 3; // Accessible only in this class
+};
+
+class Derived : public Example {
+public:
+    void show() {
+        cout << publicVar << endl;    // ✅ Accessible
+        cout << protectedVar << endl; // ✅ Accessible
+        // cout << privateVar << endl; // ❌ Error: Not accessible
+    }
+};
+
+int main() {
+    Example obj;
+    cout << obj.publicVar << endl;    // ✅ Accessible
+    // cout << obj.protectedVar << endl; // ❌ Error
+    // cout << obj.privateVar << endl; // ❌ Error
+}
+```
