@@ -1,4 +1,4 @@
-# Notes on Nicholas Day's C++ course
+# C++ General Concepts
 
 ## Namespaces 
 - A **namespace** is an identified declarative region that avoids naming conflicts.
@@ -85,8 +85,6 @@ int main() {
 }
 ```
 
----
-
 ## Passing by Constant Reference
 - A reference to the original variable is passed, but it is read-only.
 - The function can access the variable without copying it but cannot modify it.
@@ -111,8 +109,6 @@ int main() {
   The example will <strong>NOT compile</strong> as it attempts to change the value of a constant.
 </div>
 
----
-
 ## Passing by Pointer
 - Reference mechanism used within C code and inherited by C++
 - Allows modification of the original variable by dereferencing the pointer.
@@ -134,4 +130,76 @@ int main() {
     std::cout << "After modifyPointer: " << a << std::endl;  // a becomes 100.
     return 0;
 }
+```
+
+# Object Oriented Programming General Terminology
+
+- Functions declared within a class are known as **Member Functions** (methods in C# and Java).
+- Variables declared within a class are known as **Member Variables** or **Data Members**.
+
+
+## Defining Classes
+
+- Member functions and variables belonging to the class may be placed inside the `{ }`.**Note** the semicolon `;` after the class's closing bracket of the class.
+
+```cpp
+class NameOfClass {
+    int size;
+    void DoSomething() {
+        cout << "Something" << endl;
+    }
+} obj1, obj2; // obj1 and obj2 are optional declarations of instances of NameOfClass
+```
+- Alternatively, `obj1`, `obj2` can be declared separately
+```cpp
+class NameOfClass {
+    // Class members
+};
+
+NameOfClass obj1, obj2; // Declaring objects separately
+```
+## Defining Member Functions (Methods)
+- Member functions may be **defined** outside of the class definition.
+    - As long as they are preceded by the class name and scope resolution operator ``::``
+```cpp
+class NameOfClass {
+    // Declaration (prototype) inside the class's definition
+    type MemberFunctionName();
+}
+
+// Member Function definition outside class definition
+type NameOfClass::MemberFunctionName() {
+    // Statements
+}
+```
+
+## Constructor
+- A constructor is a special member function (method) that is automatically invoked when an object of the class is instantiated.
+- It has the **same name** as the class.
+- Equivalent to Python's `__init__()` function.
+- Typically used to initialise member variables.
+
+```cpp
+class Player {
+public:
+    int number;
+    string name;
+
+    Player(int pNumber, string pName) {
+        number = pNumber;
+        name = pName;
+    }
+};
+```
+- Alternative syntax
+    - Instead of assigning values inside the constructor body, member variables can be directly initialised using an **initialiser list**.
+
+```cpp
+class Player {
+public:
+    int number;
+    string name;
+
+    Player(int pNumber, string pName) : number(pNumber), name(pName) {}
+};
 ```
