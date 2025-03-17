@@ -245,7 +245,6 @@ int main() {
 
 ```cpp
 #include <iostream>
-using namespace std;
 
 class Example {
 public:
@@ -264,17 +263,17 @@ private:
 class Derived : public Example {
 public:
     void show() {
-        cout << publicVar << endl;    // ✅ Accessible
-        cout << protectedVar << endl; // ✅ Accessible
-        // cout << privateVar << endl; // ❌ Error: Not accessible
+        std::cout << publicVar << std::endl;    // ✅ Accessible
+        std::cout << protectedVar << std::endl; // ✅ Accessible
+        // std::cout << privateVar << std::endl; // ❌ Error: Not accessible
     }
 };
 
 int main() {
     Example obj;
-    cout << obj.publicVar << endl;    // ✅ Accessible
-    // cout << obj.protectedVar << endl; // ❌ Error
-    // cout << obj.privateVar << endl; // ❌ Error
+    std::cout << obj.publicVar << std::endl;    // ✅ Accessible
+    // std::cout << obj.protectedVar << std::endl; // ❌ Error
+    // std::cout << obj.privateVar << std::endl; // ❌ Error
 }
 ```
 
@@ -313,4 +312,54 @@ struct Point {
         cout << "Point(" << x << ", " << y << ")\n"; 
     }
 };
+```
+
+
+# Static vs. Dynamic Objects in C++
+
+```cpp
+class Example {
+  public:
+    Example() {
+        std::cout << "Constructor\n";
+    }
+    ~Example() {
+        std::cout << "Destructor\n";
+    }
+    void show() {
+        std::cout << "Hello World!" << std::endl;
+    }
+};
+```
+
+## Static Objects
+- **Creation:** Declared normally (**stack** or **global**).
+- **Lifetime:** Automatically managed; destroyed at scope exit.
+- Method invocation using operator `.`
+
+
+```cpp
+int main() {
+    Example obj; // Creation (static)
+    obj.show();  // Method invocation using '.'
+    // Destructor called automatically
+    return 0;
+}
+```
+
+---
+
+## Dynamic Objects
+- **Creation:** Allocated using `new` (**heap**).
+- **Lifetime:** Managed manually; must be deallocated using `delete`.
+- Method invocation using dereference operator `->`
+- Useful when object lifetime needs to extend beyond scope.
+
+```cpp
+int main() {
+    Example* obj = new Example();  // Creation (dynamic)
+    obj->show();                   // Method invocation using '->'
+    delete obj;                    // Manual deallocation (calls destructor)
+    return 0;
+}
 ```
