@@ -225,9 +225,9 @@ void print(std::string x) {
 }
 
 int main() {
-    print(10);        // Calls print(int)
-    print(3.14);      // Calls print(double)
-    print("Hello");   // Calls print(std::string)
+    print(10);       // Calls print(int)
+    print(3.14);     // Calls print(double)
+    print("Hello");  // Calls print(std::string)
     return 0;
 }
 ```
@@ -247,31 +247,31 @@ int main() {
 #include <iostream>
 
 class Example {
-public:
+  public:
     // Python equivalent: self.public_var
     int publicVar = 1;  // Accessible from anywhere
 
-protected:
+  protected:
     // Python equivalent: self._protected_var
-    int protectedVar = 2; // Accessible in derived classes
+    int protectedVar = 2;  // Accessible in derived classes
 
-private:
+  private:
     // Python equivalent: self.__private_var
-    int privateVar = 3; // Accessible only in this class
+    int privateVar = 3;  // Accessible only in this class
 };
 
 class Derived : public Example {
-public:
+  public:
     void show() {
-        std::cout << publicVar << std::endl;    // ✅ Accessible
-        std::cout << protectedVar << std::endl; // ✅ Accessible
+        std::cout << publicVar << std::endl;     // ✅ Accessible
+        std::cout << protectedVar << std::endl;  // ✅ Accessible
         // std::cout << privateVar << std::endl; // ❌ Error: Not accessible
     }
 };
 
 int main() {
     Example obj;
-    std::cout << obj.publicVar << std::endl;    // ✅ Accessible
+    std::cout << obj.publicVar << std::endl;  // ✅ Accessible
     // std::cout << obj.protectedVar << std::endl; // ❌ Error
     // std::cout << obj.privateVar << std::endl; // ❌ Error
 }
@@ -289,7 +289,7 @@ int main() {
 
 typedef struct {
     int x, y;
-    void (*print)(struct Point *); // Function pointer inside the struct
+    void (*print)(struct Point *);  // Function pointer inside the struct
 } Point;
 
 void printPoint(Point *p) {
@@ -297,8 +297,8 @@ void printPoint(Point *p) {
 }
 
 int main() {
-    Point p = {10, 20, printPoint}; // Assign function pointer
-    p.print(&p); // Call the function like a method
+    Point p = { 10, 20, printPoint };  // Assign function pointer
+    p.print(&p);                       // Call the function like a method
     return 0;
 }
 ```
@@ -340,8 +340,8 @@ class Example {
 
 ```cpp
 int main() {
-    Example obj; // Creation (static)
-    obj.show();  // Method invocation using '.'
+    Example obj;  // Creation (static)
+    obj.show();   // Method invocation using '.'
     // Destructor called automatically
     return 0;
 }
@@ -363,3 +363,46 @@ int main() {
     return 0;
 }
 ```
+
+## Anonymous Objects
+- Create objects on the fly without storing them in a named variable.
+- Typically used for immediate function calls.
+
+```cpp
+#include <iostream>
+
+class Example {
+  public:
+    Example() {
+        std::cout << "Constructor\n";
+    }
+    ~Example() {
+        std::cout << "Destructor\n";
+    }
+    void show() {
+        std::cout << "Hello World!" << std::endl;
+    }
+};
+
+// Function that takes a pointer to an Example object.
+void display(Example *ex) {
+    if (ex) {
+        ex->show();
+        delete ex;  // Clean up the dynamically allocated object.
+    }
+}
+
+int main() {
+    Example().show();        // Create an anonymous object (static) and call its method immediately.
+    display(new Example());  // Create an anonymous (dynamic) object and pass its pointer to the function.
+    // Output
+    // Constructor
+    // Hello World!
+    // Destructor
+    // Constructor
+    // Hello World!
+    // Destructor
+    return 0;
+}
+```
+
