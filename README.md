@@ -502,5 +502,12 @@ int main() {
 }
 ```
 
+# Project organisation
+
+- **Header file (`.h`)**: Contains the class definition (the **interface**) and method declarations.  
+- **Source file (`.cpp`)**: Contains the **implementation** (method definitions).
+- **Maintainability**: Changes to implementation don’t force recompilation of all files that include the header (when used properly).
+- **File Naming**: By convention, each class has its own `.h` and `.cpp` file, named after the class (e.g., `Player.h` and `Player.cpp`).
+- See `03_nicholas_day_corurse/project_organisation` for an example
 
 
