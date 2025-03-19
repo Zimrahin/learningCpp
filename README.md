@@ -315,7 +315,7 @@ struct Point {
 ```
 
 
-# Static vs. Dynamic Objects in C++
+## Static vs. Dynamic Objects in C++
 
 ```cpp
 class Example {
@@ -332,7 +332,7 @@ class Example {
 };
 ```
 
-## Static Objects
+### Static Objects
 - **Creation:** Declared normally (**stack** or **global**).
 - **Lifetime:** Automatically managed; destroyed at scope exit.
 - Method invocation using operator `.`
@@ -349,7 +349,7 @@ int main() {
 
 ---
 
-## Dynamic Objects
+### Dynamic Objects
 - **Creation:** Allocated using `new` (**heap**).
 - **Lifetime:** Managed manually; must be deallocated using `delete`.
 - Method invocation using dereference operator `->`
@@ -364,7 +364,7 @@ int main() {
 }
 ```
 
-## Anonymous Objects
+### Anonymous Objects
 - Create objects on the fly without storing them in a named variable.
 - Typically used for immediate function calls.
 
@@ -404,5 +404,58 @@ int main() {
     // Destructor
     return 0;
 }
+```
+
+## Inheritance
+
+- **Syntax:** Use a colon (`:`) after the class name followed by the access specifier (`public`, `protected`, `private`) and the base class name.
+- **Multiple inheritance** (a class can inherit from more than one base class) is possible in C++, but its use is **not recommended**.
+    - **Naming Conflicts:** Same member names in different bases can cause ambiguity.
+    - **Diamond Problem:** Ambiguity arises when two base classes inherit from the same ancestor.
+  
+```cpp
+class Base {
+  public:
+    void show() {
+        std::cout << "Base\n";
+    }
+};
+
+class Derived : public Base {
+    // Inherits public members of Base as public
+};
+
+```
+
+## Encapsulation
+  
+- Encapsulation is the practice of **hiding an object's internal state** (its member variables) and **controlling access** to that state through **member functions (methods)**.
+- Declare member variables as **`private`**.  
+- Provide **getter** and **setter** functions (or other interfaces) to manipulate and retrieve state.
+- **Mutators (Setters)**  
+     - **Allow changes** to the object’s state.  
+     - Typically non-`const`.  
+
+- **Accessors (Getters)**  
+     - **Do not modify** the object’s state.  
+     - Often declared **`const`** to ensure they cannot alter member variables.  
+
+```cpp
+class Example {
+  private:
+    int data;  // Encapsulated member
+
+  public:
+    // Setter (mutator)
+    void setData(int d) {
+        if (d > 0)
+            data = d;
+    }
+
+    // Getter (accessor)
+    int getData() const {
+        return data;
+    }
+};
 ```
 
