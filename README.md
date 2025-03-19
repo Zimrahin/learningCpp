@@ -196,11 +196,13 @@ public:
 
 ```cpp
 class Player {
-public:
-    int number;
+  public:
+    int    number;
     string name;
 
-    Player(int pNumber, string pName) : number(pNumber), name(pName) {}
+    Player(int pNumber, string pName)
+        : number(pNumber), name(pName) {
+    }
 };
 ```
 
@@ -276,6 +278,39 @@ int main() {
     // std::cout << obj.privateVar << std::endl; // ❌ Error
 }
 ```
+
+## Encapsulation
+  
+- Encapsulation is the practice of **hiding an object's internal state** (its member variables) and **controlling access** to that state through **member functions (methods)**.
+- Declare member variables as **`private`**.  
+- Provide **getter** and **setter** functions (or other interfaces) to manipulate and retrieve state.
+- **Mutators (Setters)**  
+     - **Allow changes** to the object’s state.  
+     - Typically non-`const`.  
+
+- **Accessors (Getters)**  
+     - **Do not modify** the object’s state.  
+     - Often declared **`const`** to ensure they cannot alter member variables.  
+
+```cpp
+class Example {
+  private:
+    int data;  // Encapsulated member
+
+  public:
+    // Setter (mutator)
+    void setData(int d) {
+        if (d > 0)
+            data = d;
+    }
+
+    // Getter (accessor)
+    int getData() const {
+        return data;
+    }
+};
+```
+
 
 ## Structures (and Function Pointers in C)
 
@@ -406,6 +441,8 @@ int main() {
 }
 ```
 
+
+
 ## Inheritance
 
 - **Syntax:** Use a colon (`:`) after the class name followed by the access specifier (`public`, `protected`, `private`) and the base class name.
@@ -427,35 +464,43 @@ class Derived : public Base {
 
 ```
 
-## Encapsulation
+### Abstract Member Functions and Classes
+- **Abstract Member Function (*virtual*):**
+  - Declared with `= 0` (pure **virtual** function).
+  - No implementation in the base class.
+  - Forces derived classes to provide an **override**.
+
+- **Abstract Class:**
+  - Contains at least one pure **virtual** function.
+  - Cannot be instantiated directly.
+  - Serve as a blueprint for derived classes.
+  - **Purpose:** Enforce that certain methods are implemented in derived classes.
   
-- Encapsulation is the practice of **hiding an object's internal state** (its member variables) and **controlling access** to that state through **member functions (methods)**.
-- Declare member variables as **`private`**.  
-- Provide **getter** and **setter** functions (or other interfaces) to manipulate and retrieve state.
-- **Mutators (Setters)**  
-     - **Allow changes** to the object’s state.  
-     - Typically non-`const`.  
-
-- **Accessors (Getters)**  
-     - **Do not modify** the object’s state.  
-     - Often declared **`const`** to ensure they cannot alter member variables.  
-
 ```cpp
-class Example {
+class AbstractBase {
+  public:
+    virtual void print() = 0;  // Pure virtual function
+};
+
+class Concrete : public AbstractBase {
   private:
-    int data;  // Encapsulated member
+    int id;
 
   public:
-    // Setter (mutator)
-    void setData(int d) {
-        if (d > 0)
-            data = d;
+    Concrete(int id)
+        : id(id) {
     }
-
-    // Getter (accessor)
-    int getData() const {
-        return data;
+    void print() override {  // 'override' is optional but good practice (clarity)
+        std::cout << "Overriden function" << std::endl;
     }
 };
+
+int main() {
+    Concrete c(1);
+    c.print();  // Calls the implemented function
+    return 0;
+}
 ```
+
+
 
