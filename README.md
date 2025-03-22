@@ -576,6 +576,7 @@ class Base {
     }
     ```
     - In Python, the same effect can be achieved using `super()`, which calls the constructor of the base class. 
+    - However, if the class has a base class with a constructor, Python **does NOT** automatically call it unless you explicitly do so using `super().__init__()` in the derived class.
         ```python
         class Base:
             def __init__(self, id):
@@ -593,3 +594,74 @@ class Base {
         # Base Non-Default Constructor, id = 3
         # Derived Non-Default Constructor, id = 3
         ```
+
+## `this`
+- `this` is a **pointer** to the **current object** in a class
+- `this` is implicitly passed to all non-static member function
+- It's however helpful for disambiguating member variables and parameters
+- Equivalent to Python's `self`
+
+    - If the constructor parameter has a different name than the class member, values can be assigned direclty:  
+    ```cpp
+    class MyClass {
+      private:
+        int value;
+
+      public:
+        MyClass(int v) {  // Different parameter name
+            value = v;    // No need for this-> (no ambiguity)
+        }
+    };
+    ```
+    - If the parameter name is the same as the member variable, `this->` is required:  
+    ```cpp
+    class MyClass {
+      private:
+        int value;
+
+      public:
+        MyClass(int value) {
+            this->value = value;  // Differentiates between parameter and instance variable
+        }
+    };
+    ```
+
+    - **Method chaining**
+    ```cpp
+    class MyClass {
+      private:
+        int value;
+
+      public:
+        MyClass &setValue(int value) { // &: return a **reference** to the object
+            this->value = value;
+            return *this;  // Returns current object (not pointer)
+        }
+    };
+
+    int main() {
+        MyClass obj;
+        obj.setValue(10).setValue(20);  // Chained calls
+    }
+    ```
+
+    - Analogously, in a C fashion, we could return the actual `this` pointer
+    
+        ```cpp
+        class MyClass {
+        private:
+            int value;
+
+        public:
+            MyClass* setValue(int value) {
+                this->value = value;
+                return this;  // Returns pointer to the current object
+            }
+        };
+        int main() {
+            MyClass obj;
+            obj.setValue(10)->setValue(20);  // Need to use -> instead of .
+        }
+        ```
+
+
