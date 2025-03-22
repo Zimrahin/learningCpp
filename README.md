@@ -200,9 +200,7 @@ class Player {
     int    number;
     string name;
 
-    Player(int pNumber, string pName)
-        : number(pNumber), name(pName) {
-    }
+    Player(int pNumber, string pName) : number(pNumber), name(pName) {};
 };
 ```
 
@@ -392,7 +390,7 @@ int main() {
 
 ```cpp
 int main() {
-    Example* obj = new Example();  // Creation (dynamic)
+    Example* obj = new Example;  // Creation (dynamic)
     obj->show();                   // Method invocation using '->'
     delete obj;                    // Manual deallocation (calls destructor)
     return 0;
@@ -429,7 +427,7 @@ void display(Example *ex) {
 
 int main() {
     Example().show();        // Create an anonymous object (static) and call its method immediately.
-    display(new Example());  // Create an anonymous (dynamic) object and pass its pointer to the function.
+    display(new Example);  // Create an anonymous (dynamic) object and pass its pointer to the function.
     // Output
     // Constructor
     // Hello World!
@@ -511,3 +509,87 @@ int main() {
 - See `03_nicholas_day_corurse/project_organisation` for an example
 
 
+
+## Constructors and Inheritance
+
+
+```cpp
+#include <iostream>
+
+class Base {
+  private:
+    int id;
+
+  public:
+    Base() {
+        std::cout << "Base Default Constructor\n";
+    }
+    Base(int id) : id(id) {
+        std::cout << "Base Non Default Constructor, id = " << id << std::endl;
+    };
+};
+```
+- When a derived class is instantiated, its constructor **implicitly calls** the default constructor of the base class.
+- The **base class constructor executes first**, followed by the derived class constructor.
+- In this example, the **default** constructor of the base class is called first.
+
+    ```cpp
+    class Derived : public Base {
+    public:
+        Derived() {
+            std::cout << "Derived Default Constructor\n";
+        }
+        Derived(int id) {
+            std::cout << "Derived Non Default Constructor, id = " << id << std::endl;
+        };
+    };
+
+    int main() {
+        Derived car(3);  // Base class constructor runs first, then derived class
+        return 0;
+        // Output:
+        // Base Default Constructor
+        // Derived Non Default Constructor, id = 3
+    }
+    ```
+- To call the **non default** constructor, (and thus assign a value to the private parameter id).
+    - The parent's constructor name follows the **colon** `:` after the child's constructor.
+- Arguments can be passed this way from the child to the parent's constructor.
+
+    ```cpp
+    class Derived : public Base {
+    public:
+        Derived() {
+            std::cout << "Derived Default Constructor\n";
+        }
+        Derived(int id) : Base(id) {
+            std::cout << "Derived Non Default Constructor, id = " << id << std::endl;
+        };
+    };
+
+    int main() {
+        Derived car(3);  // Base class constructor runs first, then derived class
+        return 0;
+        // Output:
+        // Base Non Default Constructor, id = 3
+        // Derived Non Default Constructor, id = 3
+    }
+    ```
+    - In Python, the same effect can be achieved using `super()`, which calls the constructor of the base class. 
+        ```python
+        class Base:
+            def __init__(self, id):
+                self.id = id
+                print(f"Base Non-Default Constructor, id = {id}")
+
+
+        class Derived(Base):
+            def __init__(self, id):
+                super().__init__(id)  # Calls the constructor of the base class
+                print(f"Derived Non-Default Constructor, id = {id}")
+
+        obj = Derived(3)
+        # Output
+        # Base Non-Default Constructor, id = 3
+        # Derived Non-Default Constructor, id = 3
+        ```
