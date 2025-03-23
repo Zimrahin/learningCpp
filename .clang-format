@@ -24,4 +24,5 @@ IndentWidth:                          4
 SortIncludes:                         false
 SpacesBeforeTrailingComments:         2
 UseTab:                               Never
+AccessModifierOffset:                 -4
 ...
