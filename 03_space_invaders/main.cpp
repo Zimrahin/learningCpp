@@ -1,14 +1,15 @@
 #include <iostream>
-#include <GLFW/glfw3.h>
+#include <GL/glew.h>     // Graphics Library Extension Wrangler
+#include <GLFW/glfw3.h>  // Graphics Library Framework
 
 // Callback function to be called by GLFW's glfwSetErrorCallback
-void error_callback(int error, const char *description) {
+void errorCallback(int error, const char *description) {
     std::cerr << "Error: " << error << description << std::endl;
 }
 
 int main() {
-    // GLFW will call error_callback when an error occurs
-    glfwSetErrorCallback(error_callback);
+    // GLFW will call errorCallback when an error occurs
+    glfwSetErrorCallback(errorCallback);
 
     // Initialise GLFW library
     if (!glfwInit())
@@ -28,6 +29,22 @@ int main() {
 
     glfwMakeContextCurrent(window);  // Make subsequent OpenGL calls apply to the current context
 
+    // Initialise GLEW: handles function pointer management automatically
+    if (glewInit() != GLEW_OK) {
+        std::cerr << "Error initializing GLEW" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+
+    // Check OpenGL version
+    int glVersion[2];
+    glGetIntegerv(GL_MAJOR_VERSION, &glVersion[0]);
+    glGetIntegerv(GL_MINOR_VERSION, &glVersion[1]);
+    std::cout << "Using OpenGL: " << glVersion[0] << "." << glVersion[1] << std::endl;
+    std::cout << "Renderer used: " << glGetString(GL_RENDERER) << std::endl;
+    std::cout << "Shading language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+
+    glClearColor(1.0, 0.0, 0.0, 1.0);
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);  // Render here
         glfwSwapBuffers(window);
