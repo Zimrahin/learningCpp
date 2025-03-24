@@ -1,58 +1,116 @@
 #include <iostream>
+#include <cstdio>
+#include <cstdint>
+#include <vector>
+#include <algorithm>
 #include <GL/glew.h>     // Graphics Library Extension Wrangler
 #include <GLFW/glfw3.h>  // Graphics Library Framework
 
-// Callback function to be called by GLFW's glfwSetErrorCallback
-void errorCallback(int error, const char *description) {
-    std::cerr << "Error: " << error << description << std::endl;
-}
+#include "utils.cpp"
+
+#define BUFFER_WIDTH  224
+#define BUFFER_HEIGHT 256
 
 int main() {
-    // GLFW will call errorCallback when an error occurs
-    glfwSetErrorCallback(errorCallback);
-
     // Initialise GLFW library
     if (!glfwInit())
         return -1;
+    glfwSetErrorCallback(errorCallback);
+    glfwSetWindowHints();
 
-    // OpenGL version at least 4.0. Core profile: explude deprecated features
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
-    GLFWwindow *window = glfwCreateWindow(640, 480, "Space Invaders", NULL, NULL);
+    // Create a windowed mode window and its OpenGL context
+    GLFWwindow *window = glfwCreateWindow(BUFFER_WIDTH, BUFFER_HEIGHT, "Space Invaders", NULL, NULL);
     if (!window) {
         glfwTerminate();
         return -1;
     }
-
     glfwMakeContextCurrent(window);  // Make subsequent OpenGL calls apply to the current context
 
     // Initialise GLEW: handles function pointer management automatically
     if (glewInit() != GLEW_OK) {
-        std::cerr << "Error initializing GLEW" << std::endl;
+        std::cerr << "Error initialising GLEW" << std::endl;
         glfwTerminate();
         return -1;
     }
 
-    // Check OpenGL version
-    int glVersion[2];
-    glGetIntegerv(GL_MAJOR_VERSION, &glVersion[0]);
-    glGetIntegerv(GL_MINOR_VERSION, &glVersion[1]);
-    std::cout << "Using OpenGL: " << glVersion[0] << "." << glVersion[1] << std::endl;
-    std::cout << "Renderer used: " << glGetString(GL_RENDERER) << std::endl;
-    std::cout << "Shading language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+    checkOpenGLVersion();
 
-    glClearColor(1.0, 0.0, 0.0, 1.0);
+    // Create graphics buffer
+    Buffer buffer;
+    buffer.width  = BUFFER_WIDTH;
+    buffer.height = BUFFER_HEIGHT;
+    buffer.pixels.resize(buffer.width * buffer.height);
+    bufferClear(buffer, 0);
+
+    // Create texture for presenting buffer to OpenGL
+    glSetBufferTextures(buffer);
+
+    // Create Vertex Array Object to generate fullscreen triangle
+    GLuint fullscreenTriangleVAO;
+    glGenVertexArrays(1, &fullscreenTriangleVAO);
+
+    GLuint shaderID = glCreateProgram();
+
+    createVertexShader(shaderID);
+    createFragmentShader(shaderID);
+    glLinkProgram(shaderID);
+
+    if (!validateProgram(shaderID)) {
+        fprintf(stderr, "Error while validating shader.\n");
+        glfwTerminate();
+        glDeleteVertexArrays(1, &fullscreenTriangleVAO);
+        return -1;
+    }
+
+    glUseProgram(shaderID);
+
+    GLint location = glGetUniformLocation(shaderID, "buffer");
+    glUniform1i(location, 0);
+
+    // OpenGL setup
+    glDisable(GL_DEPTH_TEST);
+    glActiveTexture(GL_TEXTURE0);
+
+    glBindVertexArray(fullscreenTriangleVAO);
+
+    // Prepare game
+    Sprite alien_sprite;
+    alien_sprite.width  = 11;
+    alien_sprite.height = 8;
+    alien_sprite.pixels = {
+        0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0,  // ..@.....@..
+        0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,  // ...@...@...
+        0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0,  // ..@@@@@@@..
+        0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0,  // .@@.@@@.@@.
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  // @@@@@@@@@@@
+        1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1,  // @.@@@@@@@.@
+        1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1,  // @.@.....@.@
+        0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0   // ...@@.@@...
+    };
+
+    uint32_t clearColour = rgbToUint32(0, 128, 0);
+
     while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT);  // Render here
+        bufferClear(buffer, clearColour);
+
+        bufferDrawSprite(buffer, alien_sprite, 112, 128, rgbToUint32(128, 0, 0));
+
+        glTexSubImage2D(
+            GL_TEXTURE_2D, 0, 0, 0,
+            buffer.width, buffer.height,
+            GL_RGBA, GL_UNSIGNED_INT_8_8_8_8,
+            buffer.pixels.data());
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
         glfwSwapBuffers(window);
+
         glfwPollEvents();
     }
 
     glfwDestroyWindow(window);
     glfwTerminate();
+
+    glDeleteVertexArrays(1, &fullscreenTriangleVAO);
 
     return 0;
 }
